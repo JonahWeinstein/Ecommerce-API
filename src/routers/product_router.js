@@ -13,6 +13,24 @@ router.post('/products', async (req, res) => {
         res.status(400).send(e)
     }
 })
+// update a product by id
+router.patch('/products/:id', async (req, res) => {
+    try{
+    const [numberOfAffectedRows, affectedRows] = await Product.update(
+        req.body, 
+        {
+            where: { id: req.params.id}
+        }
+    )
+    if(numberOfAffectedRows == 0){
+        return res.status(404).send() 
+    }
+    const updatedProduct = await Product.findOne({where: {id:req.params.id}})
+    res.send(updatedProduct)
+    } catch (e) {
+        res.status(400).send()
+    }
+})
 
 // delete an existing product
 router.delete('/products/:id', async (req, res) => {
