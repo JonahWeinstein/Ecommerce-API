@@ -30,6 +30,13 @@ router.get('/products/:id', async (req,res) => {
 })
 // update a product by id
 router.patch('/products/:id', async (req, res) => {
+     //lets you throw an error when client attempts to update a nonexistent or protected (ex: id) field
+     const updates = Object.keys(req.body)
+     const allowedUpdates = ['name', 'description', 'quantity', 'price']
+     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
+     if (!isValidUpdate){
+         return res.status(400).send({ error: 'Invalid Update'})
+     }
     try{
     const [numberOfAffectedRows, affectedRows] = await Product.update(
         req.body, 
@@ -46,6 +53,7 @@ router.patch('/products/:id', async (req, res) => {
         res.status(400).send()
     }
 })
+
 
 // delete an existing product
 router.delete('/products/:id', async (req, res) => {
