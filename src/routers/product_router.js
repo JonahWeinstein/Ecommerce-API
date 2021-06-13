@@ -13,6 +13,21 @@ router.post('/products', async (req, res) => {
         res.status(400).send(e)
     }
 })
+// read a product by id
+
+
+router.get('/products/:id', async (req,res) => {
+    try {
+        const product = await Product.findOne({where: {id:req.params.id}})
+        if(!product){
+            return res.status(404).send()
+        }
+        res.send(product)
+
+    } catch (e){
+        res.status(500).send()
+    }
+})
 // update a product by id
 router.patch('/products/:id', async (req, res) => {
     try{
