@@ -1,19 +1,15 @@
 const { sequelize, DataTypes } = require('../db/sequelize');
+const Product = require('./product')
 
 const Cart = sequelize.define('Cart', {
-    product_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    product_name: {
-        type: DataTypes.STRING,
-    },
-    quantity: {
+    
+    cart_quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
     freezeTableName: true
 })
+Cart.belongsTo(Product)
 
 module.exports = Cart;
