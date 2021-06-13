@@ -15,7 +15,6 @@ router.post('/products', async (req, res) => {
 })
 // read a product by id
 
-
 router.get('/products/:id', async (req,res) => {
     try {
         const product = await Product.findOne({where: {id:req.params.id}})
@@ -25,6 +24,17 @@ router.get('/products/:id', async (req,res) => {
         res.send(product)
 
     } catch (e){
+        res.status(500).send()
+    }
+})
+
+// read all products
+router.get('/products', async (req, res) => {
+    try{
+        const products = await Product.findAll()
+        res.send(products)
+
+    } catch(e) {
         res.status(500).send()
     }
 })
@@ -71,5 +81,6 @@ router.delete('/products/:id', async (req, res) => {
         res.status(500).send()
     }
 })
+
 
 module.exports = router
