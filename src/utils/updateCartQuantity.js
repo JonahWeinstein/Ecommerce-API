@@ -1,7 +1,7 @@
 const Cart = require('../models/cart')
 
 
-
+// returns updated cart item
 const updateCartQuantity = async (product_id, newQuantity) => {   
     await Cart.update(
             {

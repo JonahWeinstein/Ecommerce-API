@@ -68,7 +68,7 @@ router.patch('/products/:id', async (req, res) => {
 // delete an existing product
 router.delete('/products/:id', async (req, res) => {
     try{
-        const product = await Product.findOne({id: req.params.id})
+        const product = await Product.findOne({where: {id: req.params.id}})
         console.log(product)
         if(!product){
             return res.status(404).send()
