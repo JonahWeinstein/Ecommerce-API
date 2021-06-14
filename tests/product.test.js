@@ -2,6 +2,8 @@ const request = require('supertest')
 const app = require('../src/app')
 const Product = require('../src/models/product')
 
+
+
 const {
     productOne,
     productTwo,
@@ -25,6 +27,7 @@ test('should add a new product', async () => {
     // make sure response has these
     // expect(response.body).toMatchObject({
     //     product: {
+    //         id: 3,
     //         name: "test_product",
     //         price: 10.99,
     //         quantity: 20

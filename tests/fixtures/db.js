@@ -1,5 +1,8 @@
 const Product = require('../../src/models/product')
 const Cart = require('../../src/models/cart')
+const { sequelize } = require('../../src/models/product')
+
+sequelize.options.logging = false
 
 const productOne = {
     name: "product_1",
@@ -25,8 +28,12 @@ const cartItemTwo = {
 const setUpDatabase = async () => {
     // clear the tables in test database
     try{
-    await Product.destroy({truncate: true})
-    await Cart.destroy({truncate: true})
+    await Product.destroy({where:{}})
+    await Cart.destroy({where:{}})
+
+    // truncate/drop not having desired effect so I have to do this to reset primary key
+    await sequelize.query("ALTER TABLE Products AUTO_INCREMENT = 1;")
+    await sequelize.query("ALTER TABLE Cart AUTO_INCREMENT = 1;")
 
     // create records for testing update/delete, etc
     await Product.create(productOne)
