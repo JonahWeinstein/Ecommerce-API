@@ -10,6 +10,7 @@ const Cart = sequelize.define('Cart', {
 }, {
     freezeTableName: true
 })
+// foreign key is ProductId
 Cart.belongsTo(Product)
 
 module.exports = Cart;

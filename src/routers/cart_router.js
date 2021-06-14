@@ -15,7 +15,7 @@ router.post('/cart/add', async (req, res) => {
         const newQuantity = cartCurrent.dataValues.cart_quantity +req.body.cart_quantity
         // make sure new quanitity isn't greater than product quantity (inventory)
         if(newQuantity>cartCurrent.Product.dataValues.quantity){
-            return res.status(400).send('Not Enough Inventory')
+            return res.status(400).send({error: 'Not Enough Inventory'})
         }
 
         try {
@@ -26,8 +26,11 @@ router.post('/cart/add', async (req, res) => {
         }
     }
     const product = await Product.findOne({where: {id: req.body.ProductId}})
-    if(product.quantity < req.body.cart_quantity){
-        return res.status(400).send('Not enough inventory')
+    if(!product){
+        return res.status(400).send({error: 'cannot find product'})
+    }
+    if(product.cart_quantity < req.body.cart_quantity){
+        return res.status(400).send({error: 'Not Enough Inventory'})
     }
     const cartItem = Cart.build(req.body)
     try{    

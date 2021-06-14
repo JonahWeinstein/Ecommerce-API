@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const mysql = require('mysql2');
 
 
-const sequelize  = new Sequelize('mysql://admin:hgAS23nbIl@127.0.0.1:3306/ecommerce_api');
+const sequelize  = new Sequelize(process.env.MYSQLDB_URL);
 sequelize.sync()
 module.exports = {
   sequelize,
