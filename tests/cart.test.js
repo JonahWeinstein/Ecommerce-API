@@ -4,7 +4,9 @@ const Cart = require('../src/models/cart')
 
 const {
     productOne,
+    productOneId,
     productTwo,
+    productTwoId,
     cartItemOne,
     cartItemTwo,
     setUpDatabase
@@ -16,10 +18,10 @@ beforeEach(setUpDatabase)
 
 test('Should add a product to the cart', async () => {
     const response = await request(app).post('/cart/add').send({
-        ProductId: 1,
+        ProductId: productOneId,
         cart_quantity: 2
     }).expect(201)
     // assert that the cart item is in the databse
-    const cartItem = await Cart.findOne({ where: { ProductId: 1 }})
+    const cartItem = await Cart.findOne({ where: { ProductId: productOneId }})
     expect(cartItem).not.toBeNull()
 })

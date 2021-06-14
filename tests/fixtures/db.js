@@ -3,6 +3,7 @@ const Cart = require('../../src/models/cart')
 const { sequelize } = require('../../src/models/product')
 
 sequelize.options.logging = false
+const productOneId = 1
 
 const productOne = {
     name: "product_1",
@@ -10,6 +11,8 @@ const productOne = {
     price: 19.99,
     quantity: 15
 }
+
+const productTwoId = 2
 const productTwo = {
     name: "product_2",
     description: "this is another product",
@@ -47,7 +50,9 @@ const setUpDatabase = async () => {
 
 module.exports = {
     productOne,
+    productOneId,
     productTwo,
+    productTwoId,
     cartItemOne,
     cartItemTwo,
     setUpDatabase
