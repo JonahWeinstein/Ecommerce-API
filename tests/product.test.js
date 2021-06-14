@@ -9,8 +9,9 @@ const {
     productOneId,
     productTwo,
     productTwoId,
+    productThree,
+    productThreeId,
     cartItemOne,
-    cartItemTwo,
     setUpDatabase
 } = require('./fixtures/db')
 
@@ -28,7 +29,7 @@ test('should add a new product', async () => {
     expect(product).not.toBeNull()
     // make sure response has these
     expect(response.body).toMatchObject({
-            id: 3,
+            id: 4,
             name: "test_product",
             price: 10.99,
             quantity: 20
@@ -37,8 +38,8 @@ test('should add a new product', async () => {
 test('should return all products', async() => {
     const response = await request(app).get('/products').send().expect(200)
 })
-test('Should delete product 2', async () => {
-    const response = await request(app).delete('/products/2').send().expect(200)
-    const deletedProduct = await Product.findOne({ where: { id: productTwoId }})
+test('Should delete product 3', async () => {
+    const response = await request(app).delete(`/products/${productThreeId}`).send().expect(200)
+    const deletedProduct = await Product.findOne({ where: { id: productThreeId }})
     expect(deletedProduct).toBeNull()
 })

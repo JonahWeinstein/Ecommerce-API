@@ -19,13 +19,16 @@ const productTwo = {
     price: 14.95,
     quantity: 30
 }
-const cartItemOne = {
-    productId: 1,
-    quantity: 3
+const productThreeId = 3
+const productThree = {
+    name: "product_3",
+    description: "this is a third",
+    price: 9.95,
+    quantity: 40
 }
-const cartItemTwo = {
-    productId: 2,
-    quantity: 2
+const cartItemOne = {
+    ProductId: productOneId,
+    cart_quantity: 3
 }
 
 const setUpDatabase = async () => {
@@ -41,8 +44,8 @@ const setUpDatabase = async () => {
     // create records for testing update/delete, etc
     await Product.create(productOne)
     await Product.create(productTwo)
+    await Product.create(productThree)
     await Cart.create(cartItemOne)
-    await Cart.create(cartItemTwo)
     } catch(e){
         return { error: 'Could not run setupDatabase'}
     }
@@ -53,7 +56,8 @@ module.exports = {
     productOneId,
     productTwo,
     productTwoId,
+    productThree,
+    productThreeId,
     cartItemOne,
-    cartItemTwo,
     setUpDatabase
 }
