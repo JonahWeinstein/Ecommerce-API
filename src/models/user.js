@@ -29,4 +29,27 @@ const User = sequelize.define('User', {
     }
 })
 
+// for instance methods you need to pass the instance as parameter
+User.beforeSave( async (user) => {
+    
+    // checks if password is being created/ modified (needs to be hashed/rehashed)
+    if (user.changed('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+ })
+
+ User.findByCredentials = async (email, password) => {
+     const user = await User.findOne({where: { email: email}})
+     if(!user) {
+        throw new Error('Unable to login')
+     }
+    // hashes password argument and checks if hash matched user password
+    // bcrypt.compare() order of arguments matters!
+    const isMatch = await bcrypt.compare(password, user.password)
+    if(!isMatch) {
+        throw new Error('Unable to login')
+    }
+    return user
+ }
+
 module.exports = User
