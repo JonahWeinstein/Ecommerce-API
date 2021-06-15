@@ -11,6 +11,6 @@ const Cart = sequelize.define('Cart', {
     freezeTableName: true
 })
 // foreign key is ProductId
-Cart.belongsTo(Product)
+Cart.belongsTo(Product, {onDelete: 'cascade'})
 
 module.exports = Cart;

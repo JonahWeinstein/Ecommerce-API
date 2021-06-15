@@ -43,3 +43,18 @@ test('Should delete product 3', async () => {
     const deletedProduct = await Product.findOne({ where: { id: productThreeId }})
     expect(deletedProduct).toBeNull()
 })
+
+test('Should update a product', async () => {
+    const response = await request(app).patch(`/products/${productTwoId}`).send({
+        description: "updated description"
+    }).expect(200)
+    expect(response.body).toMatchObject({
+        description: "updated description"
+    })
+})
+
+test('Should not update unauthorized field of a product', async () => {
+    await request(app).patch(`/products/${productTwoId}`).send({
+        id: 20
+    }).expect(400)
+})

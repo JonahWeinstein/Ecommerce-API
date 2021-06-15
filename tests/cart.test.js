@@ -41,7 +41,21 @@ test('should remove a product from cart', async () =>{
     const response = await request(app).patch(`/cart/change/${productOneId}`).send({
         cart_quantity: 0
     }).expect(200)
-    // assert that the cart item is in the databse
+    // assert that the cart item is no the databse
     const cartItem = await Cart.findOne({ where: { ProductId: productOneId }})
     expect(cartItem).toBeNull()
+})
+
+test('Should update the quantity of a cart item', async () => {
+    const response = await request(app).patch(`/cart/change/${productOneId}`).send({
+        cart_quantity: 5
+    }).expect(200)
+    const cartItem = await Cart.findOne({ where: { ProductId: productOneId }})
+    expect(cartItem).toMatchObject({
+        cart_quantity: 5
+    })
+})
+
+test('Should read all cart items', async () =>{
+    const response = await request(app).get('/cart').expect(200)
 })
