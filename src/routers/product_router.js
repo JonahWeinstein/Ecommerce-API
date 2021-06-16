@@ -1,11 +1,15 @@
 const express = require('express')
 const Product = require('../models/product')
+const auth = require('../middleware/auth')
 
 const router = new express.Router();
 
-// add a new product
-router.post('/products', async (req, res) => {
-    const product = Product.build(req.body)
+// add a product to a store
+router.post('/products/:store_id', auth, async (req, res) => {
+    const product = Product.build({
+        ...req.body,
+        StoreId: req.params.store_id
+    })
     try{    
         await product.save()
         res.status(201).send(product)

@@ -1,5 +1,5 @@
 const { sequelize, DataTypes } = require('../db/sequelize')
-
+const Store = require('./store')
 
 
 const Product = sequelize.define('Product', {
@@ -19,5 +19,7 @@ const Product = sequelize.define('Product', {
         allowNull: false
     }
 });
+
+Product.belongsTo(Store, { onDelete: 'cascade' })
 
 module.exports = Product;

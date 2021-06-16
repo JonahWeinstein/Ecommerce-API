@@ -8,7 +8,8 @@ const auth = async (req, res, next) => {
         // verify that token matches signature and decode into payload
         const decoded = jwt.verify(token, process.env.JWT_SIGNATURE)
         // look for a user with the right id and the recieved token in its tokens array
-        const user = await User.findOne({_id: decoded._id})
+        const user = await User.findOne({where: {id: decoded.id}})
+        console.log(user)
 
         if(!user){
             throw new Error()

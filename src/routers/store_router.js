@@ -17,4 +17,14 @@ router.post('/stores/add', auth, async (req, res) => {
     }
 })
 
+// get all your stores
+router.get('/stores', auth, async (req, res) => {
+    try{
+        const allStores = await Store.findAll({where: { UserId: req.user.id }})
+        res.send(allStores)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 module.exports = router
