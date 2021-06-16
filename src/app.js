@@ -5,6 +5,7 @@ const session = require('express-session')
 const productRouter = require('./routers/product_router')
 const cartRouter = require('./routers/cart_router')
 const userRouter = require('./routers/user_router')
+const store_router = require('./routers/store_router')
 
 const app = express()
 
@@ -14,5 +15,6 @@ app.use(express.json());
 app.use(productRouter)
 app.use(cartRouter)
 app.use(userRouter)
+app.use(store_router)
 
 module.exports = app
