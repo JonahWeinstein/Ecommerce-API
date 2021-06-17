@@ -1,41 +1,33 @@
 const express = require('express')
 const Product = require('../models/product')
 const auth = require('../middleware/auth')
+const Store = require('../models/store')
 
 const router = new express.Router();
 
 // add a product to a store
 router.post('/products/:store_id', auth, async (req, res) => {
-    const product = Product.build({
-        ...req.body,
-        StoreId: req.params.store_id
-    })
-    try{    
+    try{   
+        // see if store exists/does this user have acecss
+        const store = await Store.findOne({ where: { id: req.params.store_id, UserId: req.user.id}})
+        if(!store){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        const product = Product.build({
+            ...req.body,
+            StoreId: req.params.store_id
+        }) 
         await product.save()
         res.status(201).send(product)
     } catch (e) {
         res.status(400).send(e)
     }
 })
-// read a product by id
 
-router.get('/products/:id', async (req,res) => {
-    try {
-        const product = await Product.findOne({where: {id:req.params.id}})
-        if(!product){
-            return res.status(404).send()
-        }
-        res.send(product)
-
-    } catch (e){
-        res.status(500).send()
-    }
-})
-
-// read all products
-router.get('/products', async (req, res) => {
+// read all products from a store
+router.get('/products/:store_id', auth, async (req, res) => {
     try{
-        const products = await Product.findAll()
+        const products = await Product.findAll({where: {StoreId: req.params.store_id}})
         res.send(products)
 
     } catch(e) {
