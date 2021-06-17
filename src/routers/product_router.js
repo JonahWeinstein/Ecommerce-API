@@ -24,8 +24,24 @@ router.post('/products/add', auth, async (req, res) => {
     }
 })
 
+// read one product by id 
+
+router.get('./prodcuts/:id', auth, async (req, res) => {
+    try{
+        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        if(!store){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        const product = await Product.findOne({where: {id: req.params.id, StoreId: req.query.store}})
+        res.send(product)
+
+    } catch(e) {
+        res.status(400).send()
+    }
+} )
+
 // read all products from a store specified in the query string
-router.get('/products', auth, async (req, res) => {
+router.get('/products/all', auth, async (req, res) => {
     try{
         const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
         if(!store){
@@ -68,20 +84,24 @@ router.patch('/products/update', auth, async (req, res) => {
 })
 
 
-// delete an existing product
-router.delete('/products/:id', async (req, res) => {
+// delete an existing product with store and product in query string
+router.delete('/products/delete', auth, async (req, res) => {
     try{
-        const product = await Product.findOne({where: {id: req.params.id}})
+        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        if(!store){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        const product = await Product.findOne({where: {id: req.query.product}})
         console.log(product)
         if(!product){
             return res.status(404).send()
         }
         await Product.destroy({
-            where: { id: req.params.id}
+            where: { id: req.query.product}
         })
         res.send(product)
     } catch (e) {
-        res.status(500).send()
+        res.status(400).send()
     }
 })
 
