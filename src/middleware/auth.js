@@ -9,10 +9,9 @@ const auth = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SIGNATURE)
         // look for a user with the right id and the recieved token in its tokens array
         const user = await User.findOne({where: {id: decoded.id}})
-        console.log(user)
 
         if(!user){
-            throw new Error()
+            throw new Error({error: 'Cannot authenticate'})
         }
         //store the returned user and session token in the request
         req.token = token

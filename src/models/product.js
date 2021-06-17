@@ -17,6 +17,9 @@ const Product = sequelize.define('Product', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    image: {
+        type: DataTypes.BLOB('long')
     }
 });
 

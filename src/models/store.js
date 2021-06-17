@@ -8,6 +8,6 @@ const Store = sequelize.define('Store', {
     }
 })
 
-Store.belongsTo(User)
+Store.belongsTo(User, {onDelete: 'cascade'})
 
 module.exports = Store

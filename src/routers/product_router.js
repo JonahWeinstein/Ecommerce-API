@@ -1,7 +1,10 @@
 const express = require('express')
+const multer = require('multer')
+const sharp = require('sharp')
 const Product = require('../models/product')
-const auth = require('../middleware/auth')
 const Store = require('../models/store')
+const auth = require('../middleware/auth')
+
 
 const router = new express.Router();
 
@@ -26,13 +29,13 @@ router.post('/products/add', auth, async (req, res) => {
 
 // read one product by id 
 
-router.get('./prodcuts/:id', auth, async (req, res) => {
+router.get('/products', auth, async (req, res) => {
     try{
         const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
         if(!store){
             return res.status(400).send({error: 'cannot find store'})
         }
-        const product = await Product.findOne({where: {id: req.params.id, StoreId: req.query.store}})
+        const product = await Product.findOne({where: {id: req.query.product, StoreId: req.query.store}})
         res.send(product)
 
     } catch(e) {
@@ -83,6 +86,47 @@ router.patch('/products/update', auth, async (req, res) => {
     }
 })
 
+// used to define what kind of uploads are allowed
+const upload = multer({
+    // listing a dest field will make multer store file in that directory (but you wont have access to it in router call)
+    limits: {
+        // max filesize in bytes
+        fileSize: 1000000
+    },
+    // file contsains fields relating to the uploaded file
+    fileFilter(req, file, cb){
+        if(!file.originalname.match(/\.(jpeg|jpg|png)$/)){
+            return cb(new Error('Please make sure filetype is jpeg, jpg, or png'))
+        }
+        // callback takes an error and a boolean which states whether to upload or not
+        cb(undefined, true)
+    }
+})
+// store and product specified in query string
+router.post('/products/image', auth, upload.single('image'), async (req, res) => {
+    try {
+        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        if(!store){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        console.log(store)
+        const buffer = await sharp(req.file.buffer).png().resize({ width: 250, height: 250 }).toBuffer()
+        const [numberOfAffectedRows, affectedRows] = await Product.update(
+            {image: buffer},
+            { where: { id: req.query.product, StoreID: req.query.store }}
+        )
+        if(numberOfAffectedRows == 0){
+            return res.status(404).send() 
+        }
+        const updatedProduct = await Product.findOne({where: {id:req.query.product}})
+        res.send(updatedProduct)
+
+    } catch (e) {
+        res.status(400).send(e)
+    }
+    
+})
+
 
 // delete an existing product with store and product in query string
 router.delete('/products/delete', auth, async (req, res) => {
@@ -92,7 +136,6 @@ router.delete('/products/delete', auth, async (req, res) => {
             return res.status(400).send({error: 'cannot find store'})
         }
         const product = await Product.findOne({where: {id: req.query.product}})
-        console.log(product)
         if(!product){
             return res.status(404).send()
         }
