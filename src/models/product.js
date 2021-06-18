@@ -1,5 +1,6 @@
 const { sequelize, DataTypes } = require('../db/sequelize')
 const Store = require('./store')
+const Image = require('./image')
 
 
 const Product = sequelize.define('Product', {
@@ -17,12 +18,10 @@ const Product = sequelize.define('Product', {
     quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
-    },
-    image: {
-        type: DataTypes.BLOB('long')
     }
 });
 
 Product.belongsTo(Store, { onDelete: 'cascade' })
+Product.hasMany(Image, {onDelete: 'cascade'})
 
 module.exports = Product;
