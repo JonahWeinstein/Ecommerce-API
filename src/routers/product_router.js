@@ -139,12 +139,18 @@ router.post('/products/images/add', auth, upload.single('image'), async (req, re
 
 router.get('/products/images', auth, async (req, res) => {
     
-    const product = await Product.findOne({ where: { id: req.query.store, id: req.query.product}, include: Store, include: Image})
+    const product = await Product.findOne({ 
+        where: { id: req.query.product, StoreId: req.query.store}, 
+        include: [{ model: Image}, {model: Store}]
+    })
     // make sure product exists in this store
     if(!product){
         return res.status(400).send({error: 'cannot find product'})
     }
     // make sure the store belongs to the user
+    if(product.Store.UserId != req.user.id){
+        return res.status(400).send({error: 'Unauthorized'})
+    }
     
     res.send(product.Images)
 })
