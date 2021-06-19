@@ -1,5 +1,4 @@
 const path = require('path')
-var basename = path.basename(module.filename);
 const fs = require('file-system');
 const {Sequelize, DataTypes} = require('sequelize');
 
@@ -9,16 +8,15 @@ var db = {};
 
 const sequelize  = new Sequelize(process.env.MYSQLDB_URL);
 
-
+const modelPath = path.join(__dirname, '/models')
 fs
-.readdirSync(__dirname)
-.filter(function(file) {
-  return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-})
+.readdirSync(modelPath)
+
 .forEach(function(file) {
-  const model = require(path.join(__dirname, file))(sequelize, DataTypes)
+  const model = require(path.join(__dirname, '/models', file))(sequelize, DataTypes)
   db[model.name] = model;
 });
+// checks if model has association and if so runs associate method with db (list of models) as argument
 Object.keys(db).forEach(function(modelName) {
   if (db[modelName].associate) {
     db[modelName].associate(db);

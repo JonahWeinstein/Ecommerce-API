@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     });
     
     Product.associate = function(models) {
-        Product.hasMany(models.Image)
+        Product.hasMany(models.Image, {onDelete: 'cascade'})
+        Product.belongsTo(models.Store, {onDelete: 'cascade'})
     }
     return Product;
     
