@@ -1,5 +1,5 @@
 const express = require('express')
-const Store = require('../models/store')
+const {Store} = require('../models/sequelize')
 const auth = require('../middleware/auth')
 
 const router = new express.Router();

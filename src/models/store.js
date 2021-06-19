@@ -1,13 +1,14 @@
-const { sequelize, DataTypes } = require('../db/sequelize')
-const User = require('./user')
 
-const Store = sequelize.define('Store', {
-    store_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+module.exports = (sequelize, DataTypes) => {
+    const Store = sequelize.define('Store', {
+        store_name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    })
+    
+    Store.associate = function(models) {
+        Store.hasMany(models.Product, {onDelete: 'cascade'} )
     }
-})
-
-Store.belongsTo(User, {onDelete: 'cascade'})
-
-module.exports = Store
+    return Store
+}

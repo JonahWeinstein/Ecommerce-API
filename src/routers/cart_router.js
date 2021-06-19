@@ -1,6 +1,5 @@
 const express = require('express');
-const Cart = require('../models/cart')
-const Product = require('../models/product')
+const {Cart, Product} = require('../models/sequelize')
 const updateCartQuantity = require('../utils/updateCartQuantity')
 
 const router = new express.Router();

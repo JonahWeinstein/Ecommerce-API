@@ -1,9 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
-const Product = require('../models/product')
-const Store = require('../models/store')
-const Image = require('../models/image')
+const {Product, Store, Image} = require('../models/sequelize')
 const auth = require('../middleware/auth')
 
 
