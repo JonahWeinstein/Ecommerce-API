@@ -1,9 +1,6 @@
-const Product = require('../../src/models/product')
-const Cart = require('../../src/models/cart')
-const User = require('../../src/models/user')
-const { sequelize } = require('../../src/db/sequelize')
+const {User, Store, Product, Image, Cart } = require('../../src/sequelize')
 
-sequelize.options.logging = false
+
 
 const productOneId = 1
 const productOne = {

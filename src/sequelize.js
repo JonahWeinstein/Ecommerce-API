@@ -1,18 +1,16 @@
 const path = require('path')
-const fs = require('file-system');
+const fs = require('fs');
 const {Sequelize, DataTypes} = require('sequelize');
 
-
-
+// create database object to hold all model definitions
 var db = {};
 
 const sequelize  = new Sequelize(process.env.MYSQLDB_URL);
 
 const modelPath = path.join(__dirname, '/models')
-fs
-.readdirSync(modelPath)
 
-.forEach(function(file) {
+fs.readdirSync(modelPath).forEach(function(file) {
+  // extract each model out of module.exports and save them as part of db
   const model = require(path.join(__dirname, '/models', file))(sequelize, DataTypes)
   db[model.name] = model;
 });

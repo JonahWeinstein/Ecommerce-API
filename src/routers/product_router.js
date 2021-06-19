@@ -133,6 +133,26 @@ router.post('/products/images/add', auth, upload.single('image'), async (req, re
     }
     
 })
+// delete a product image by storeid, prodictid, imageid in query string
+router.delete('/products/images/delete', auth, async (req, res) => {
+    try{
+        const product = await Product.findOne({ 
+            where: { id: req.query.product, StoreId: req.query.store}, 
+            include: [{model: Store}]
+        })
+        if(!product){
+            return res.status(400).send({error: 'cannot find product'})
+        }
+        // make sure the store belongs to the user
+        if(product.Store.UserId != req.user.id){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        await Image.destroy({where: {id: req.query.image, ProductId: req.query.product}})
+        res.send()
+    } catch (e) {
+        res.status(400).send()
+    }
+})
 //get all images for a product
 
 router.get('/products/images', auth, async (req, res) => {
