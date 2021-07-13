@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const db = require('./sequelize')
 
 
@@ -10,7 +11,7 @@ const store_router = require('./routers/store_router')
 
 const app = express()
 
-
+app.use(cors())
 app.use(express.json());
 app.use(productRouter)
 app.use(cartRouter)

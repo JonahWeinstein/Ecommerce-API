@@ -8,16 +8,16 @@ const auth = require('../middleware/auth')
 const router = new express.Router();
 
 // add a product to a store
-router.post('/products/add', auth, async (req, res) => {
+router.post('/stores/:storeId/products/add', auth, async (req, res) => {
     try{   
         // see if store exists/does this user have acecss
-        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
         if(!store){
             return res.status(404).send({error: 'cannot find store'})
         }
         const product = Product.build({
             ...req.body,
-            StoreId: req.query.store
+            StoreId: req.params.storeId
         }) 
         await product.save()
         res.status(201).send(product)
@@ -43,13 +43,13 @@ router.get('/products', auth, async (req, res) => {
 } )
 
 // read all products from a store specified in the query string
-router.get('/products/all', auth, async (req, res) => {
+router.get('/stores/:id/products/all', auth, async (req, res) => {
     try{
-        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        const store = await Store.findOne({ where: { id: req.params.id, UserId: req.user.id}})
         if(!store){
             return res.status(400).send({error: 'cannot find store'})
         }
-        const products = await Product.findAll({where: {StoreId: req.query.store}})
+        const products = await Product.findAll({where: {StoreId: req.params.id}})
         res.send(products)
 
     } catch(e) {
@@ -58,7 +58,7 @@ router.get('/products/all', auth, async (req, res) => {
 })
 // products/update?store=9&product=11
 // update a product by id using the query string
-router.patch('/products/update', auth, async (req, res) => {
+router.patch('/stores/:storeId/products/:productId/update', auth, async (req, res) => {
      //lets you throw an error when client attempts to update a nonexistent or protected (ex: id) field
      const updates = Object.keys(req.body)
      const allowedUpdates = ['name', 'description', 'quantity', 'price']
@@ -67,7 +67,7 @@ router.patch('/products/update', auth, async (req, res) => {
          return res.status(400).send({ error: 'Invalid Update'})
      }
     try{
-        const product = await Product.findOne({ where: { id: req.query.store, id: req.query.product}, include: Store})
+        const product = await Product.findOne({ where: { StoreId: req.params.storeId, id: req.params.productId}, include: Store})
         // make sure product exists in this store
         if(!product){
             return res.status(400).send({error: 'cannot find product'})
@@ -78,12 +78,12 @@ router.patch('/products/update', auth, async (req, res) => {
         }
         const [numberOfAffectedRows, affectedRows] = await Product.update(
             req.body, 
-            { where: { id: req.query.product, StoreID: req.query.store }}
+            { where: { id: req.params.productId, StoreID: req.params.storeId }}
     )
     if(numberOfAffectedRows == 0){
         return res.status(404).send() 
     }
-    const updatedProduct = await Product.findOne({where: {id:req.query.product}})
+    const updatedProduct = await Product.findOne({where: {id:req.params.productId}})
     res.send(updatedProduct)
     } catch (e) {
         res.status(400).send()
@@ -175,18 +175,18 @@ router.get('/products/images', auth, async (req, res) => {
 
 
 // delete an existing product with store and product in query string
-router.delete('/products/delete', auth, async (req, res) => {
+router.delete('/stores/:storeId/products/:productId/delete', auth, async (req, res) => {
     try{
-        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
+        const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
         if(!store){
             return res.status(400).send({error: 'cannot find store'})
         }
-        const product = await Product.findOne({where: {id: req.query.product}})
+        const product = await Product.findOne({where: {id: req.params.productId}})
         if(!product){
             return res.status(404).send()
         }
         await Product.destroy({
-            where: { id: req.query.product}
+            where: { id: req.params.productId}
         })
         res.send(product)
     } catch (e) {

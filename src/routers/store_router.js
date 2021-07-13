@@ -5,6 +5,7 @@ const auth = require('../middleware/auth')
 const router = new express.Router();
 
 router.post('/stores/add', auth, async (req, res) => {
+    console.log(req.body)
     try{
         const store = Store.build({
             ...req.body,
