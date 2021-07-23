@@ -26,21 +26,6 @@ router.post('/stores/:storeId/products/add', auth, async (req, res) => {
     }
 })
 
-// read one product by id 
-
-router.get('/products', auth, async (req, res) => {
-    try{
-        const store = await Store.findOne({ where: { id: req.query.store, UserId: req.user.id}})
-        if(!store){
-            return res.status(400).send({error: 'cannot find store'})
-        }
-        const product = await Product.findOne({where: {id: req.query.product, StoreId: req.query.store}})
-        res.send(product)
-
-    } catch(e) {
-        res.status(400).send()
-    }
-} )
 
 // read all products from a store specified in the query string
 router.get('/stores/:id/products/all', auth, async (req, res) => {
@@ -57,6 +42,22 @@ router.get('/stores/:id/products/all', auth, async (req, res) => {
         res.status(400).send()
     }
 })
+// read one product by id 
+
+router.get('/stores/:storeId/products/:id', auth, async (req, res) => {
+    try{
+        const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
+        if(!store){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        const product = await Product.findOne({where: {id: req.params.id, StoreId: req.params.storeId},
+        include: [{model: Image}]})
+        res.send(product)
+
+    } catch(e) {
+        res.status(400).send()
+    }
+} )
 // products/update?store=9&product=11
 // update a product by id using the query string
 router.patch('/stores/:storeId/products/:productId/update', auth, async (req, res) => {
@@ -109,9 +110,9 @@ const upload = multer({
 })
 // store and product specified in query string
 // add images to the product
-router.post('/products/images/add', auth, upload.single('image'), async (req, res) => {
+router.post('/stores/:storeId/products/:productId/images/add', auth, upload.single('image'), async (req, res) => {
     try {
-        const product = await Product.findOne({ where: { id: req.query.store, id: req.query.product}, include: Store})
+        const product = await Product.findOne({ where: { id: req.params.productId, StoreId: req.params.storeId}, include: Store})
         // make sure product exists in this store
         if(!product){
             return res.status(400).send({error: 'cannot find product'})
@@ -124,7 +125,7 @@ router.post('/products/images/add', auth, upload.single('image'), async (req, re
         const image = await Image.create(
             {
                 data: buffer,
-                ProductId: req.query.product
+                ProductId: req.params.productId
             }
         )
         res.send(image)
