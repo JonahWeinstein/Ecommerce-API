@@ -49,7 +49,8 @@ router.get('/stores/:id/products/all', auth, async (req, res) => {
         if(!store){
             return res.status(400).send({error: 'cannot find store'})
         }
-        const products = await Product.findAll({where: {StoreId: req.params.id}})
+        const products = await Product.findAll({where: {StoreId: req.params.id},
+        include: [{model: Image}]})
         res.send(products)
 
     } catch(e) {

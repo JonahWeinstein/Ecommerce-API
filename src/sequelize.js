@@ -5,7 +5,10 @@ const {Sequelize, DataTypes} = require('sequelize');
 // create database object to hold all model definitions
 var db = {};
 
-const sequelize  = new Sequelize(process.env.MYSQLDB_URL);
+const sequelize  = new Sequelize('ecommerce_api','admin','hgAS23nbIl', {
+  host: 'localhost',
+  dialect: 'mysql'
+});
 
 const modelPath = path.join(__dirname, '/models')
 

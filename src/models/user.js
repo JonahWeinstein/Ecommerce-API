@@ -59,7 +59,6 @@ module.exports = (sequelize, DataTypes) => {
         const user = this
         //create a token using users unique id
         const token = jwt.sign({id: user.id.toString()}, process.env.JWT_SIGNATURE, { expiresIn: '3h' }) 
-    
         return token
      };
     
