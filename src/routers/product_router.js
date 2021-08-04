@@ -55,7 +55,8 @@ router.get('/stores/:storeId/products/:id', auth, async (req, res) => {
         res.send(product)
 
     } catch(e) {
-        res.status(400).send()
+        console.log(e)
+        res.status(400).send(e)
     }
 } )
 // products/update?store=9&product=11
@@ -150,9 +151,11 @@ router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', aut
             return res.status(400).send({error: 'cannot find store'})
         }
         await Image.destroy({where: {id: req.params.imageId, ProductId: req.params.productId}})
-        res.send()
+        // still need to send something back to avoid unexpected end of JSON input in client
+        res.send(product)
     } catch (e) {
-        res.status(400).send()
+        console.log(e)
+        res.status(400).send(e)
     }
 })
 //get all images for a product
