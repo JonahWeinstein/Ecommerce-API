@@ -97,7 +97,7 @@ const upload = multer({
     // listing a dest field will make multer store file in that directory (but you wont have access to it in router call)
     limits: {
         // max filesize in bytes
-        fileSize: 1000000
+        fileSize: 2000000
     },
     // file contsains fields relating to the uploaded file
     fileFilter(req, file, cb){
@@ -136,10 +136,10 @@ router.post('/stores/:storeId/products/:productId/images/add', auth, upload.sing
     
 })
 // delete a product image by storeid, prodictid, imageid in query string
-router.delete('/products/images/delete', auth, async (req, res) => {
+router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', auth, async (req, res) => {
     try{
         const product = await Product.findOne({ 
-            where: { id: req.query.product, StoreId: req.query.store}, 
+            where: { id: req.params.productId, StoreId: req.params.storeId}, 
             include: [{model: Store}]
         })
         if(!product){
@@ -149,7 +149,7 @@ router.delete('/products/images/delete', auth, async (req, res) => {
         if(product.Store.UserId != req.user.id){
             return res.status(400).send({error: 'cannot find store'})
         }
-        await Image.destroy({where: {id: req.query.image, ProductId: req.query.product}})
+        await Image.destroy({where: {id: req.params.imageId, ProductId: req.params.productId}})
         res.send()
     } catch (e) {
         res.status(400).send()
