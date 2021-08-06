@@ -5,7 +5,6 @@ const auth = require('../middleware/auth')
 const router = new express.Router();
 
 router.post('/stores/add', auth, async (req, res) => {
-    console.log(req.body)
     try{
         const store = Store.build({
             ...req.body,
@@ -23,6 +22,16 @@ router.get('/stores', auth, async (req, res) => {
     try{
         const allStores = await Store.findAll({where: { UserId: req.user.id }})
         res.send(allStores)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+// delete a store by id
+router.delete('/stores/:id/delete', auth, async (req, res) => {
+    try {
+        await Store.destroy({where: {id: req.params.id, UserId: req.user.id}})
+        res.send({})
     } catch (e) {
         res.status(400).send(e)
     }
