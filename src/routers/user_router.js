@@ -9,12 +9,22 @@ const router = new express.Router();
 // create new user
 router.post('/users', async (req, res) => {
     try{
+        const {name, email, password} = req.body
+        if(!name || !email || !password) {
+            return res.status(400).send({error: 'cannot have null fields'})
+        }
         const user = User.build(req.body)
         await user.save()
         const token = await user.generateAuthToken()
         res.status(201).send({user, token})
     } catch(e) {
-        res.status(400).send(e)
+        if(e.name == 'SequelizeUniqueConstraintError'){
+            res.status(400).send('there is already an account with this email')
+        }
+        else {
+            res.status(400).send(e)
+        }
+        
  
     }
  })
