@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
         data: {
             type: DataTypes.BLOB('long'),
             allowNull: false
+        }, 
+        order: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     });
     return Image;

@@ -5,7 +5,7 @@ const {Sequelize, DataTypes} = require('sequelize');
 // create database object to hold all model definitions
 var db = {};
 
-const sequelize  = new Sequelize('ecommerce_api','admin','hgAS23nbIl', {
+const sequelize  = new Sequelize('ecommerce_api','root','secretpassword', {
   host: 'localhost',
   dialect: 'mysql'
 });

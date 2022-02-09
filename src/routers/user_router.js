@@ -22,7 +22,7 @@ router.post('/users', async (req, res) => {
             res.status(400).send('there is already an account with this email')
         }
         else {
-            res.status(400).send(e)
+            res.status(400).send('Unable to Register')
         }
         
  
