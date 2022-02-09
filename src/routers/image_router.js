@@ -40,30 +40,6 @@ router.get('/products/images', auth, async (req, res) => {
     
     res.send(product.Images)
 })
-
-// delete a product image by storeid, prodictid, imageid in query string
-router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', auth, async (req, res) => {
-    try{
-        const product = await Product.findOne({ 
-            where: { id: req.params.productId, StoreId: req.params.storeId}, 
-            include: [{model: Store}]
-        })
-        if(!product){
-            return res.status(400).send({error: 'cannot find product'})
-        }
-        // make sure the store belongs to the user
-        if(product.Store.UserId != req.user.id){
-            return res.status(400).send({error: 'cannot find store'})
-        }
-        await Image.destroy({where: {id: req.params.imageId, ProductId: req.params.productId}})
-        // still need to send something back to avoid unexpected end of JSON input in client
-        res.send(product)
-    } catch (e) {
-        console.log(e)
-        res.status(400).send(e)
-    }
-})
-
 // store and product specified in query string
 // add images to the product
 router.post('/stores/:storeId/products/:productId/images/add', auth, upload.single('image'), async (req, res) => {
@@ -92,5 +68,60 @@ router.post('/stores/:storeId/products/:productId/images/add', auth, upload.sing
     }
     
 })
+
+
+// delete a product image by storeid, prodictid, imageid in query string
+router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', auth, async (req, res) => {
+    try{
+        const product = await Product.findOne({ 
+            where: { id: req.params.productId, StoreId: req.params.storeId}, 
+            include: [{model: Store}]
+        })
+        if(!product){
+            return res.status(400).send({error: 'cannot find product'})
+        }
+        // make sure the store belongs to the user
+        if(product.Store.UserId != req.user.id){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        await Image.destroy({where: {id: req.params.imageId, ProductId: req.params.productId}})
+        // still need to send something back to avoid unexpected end of JSON input in client
+        res.send(product)
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e)
+    }
+})
+// update an images order
+router.patch('/stores/:storeId/products/:productId/images/:imageId/update', auth, async (req, res) => {
+    try {
+        const product = await Product.findOne({ 
+            where: { id: req.params.productId, StoreId: req.params.storeId}, 
+            include: [{model: Store}]
+        })
+        if(!product){
+            return res.status(400).send({error: 'cannot find product'})
+        }
+        // make sure the store belongs to the user
+        if(product.Store.UserId != req.user.id){
+            return res.status(400).send({error: 'cannot find store'})
+        }
+        const [numberOfAffectedRows, affectdRows] = await Image.update(
+            req.body,
+            {where: {id: req.params.imageId, ProductId: req.params.productId }}
+        )
+        if(numberOfAffectedRows == 0){
+            return res.status(404).send()
+        }
+        const updatedImage = await Image.findOne({where: {id:req.params.imageId}})
+        res.send(updatedImage)
+    } catch(e) {
+        res.status(400).send(e)
+    }
+    
+
+    
+})
+
 
 module.exports = router;
