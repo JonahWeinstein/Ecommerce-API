@@ -88,7 +88,6 @@ router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', aut
         // still need to send something back to avoid unexpected end of JSON input in client
         res.send(product)
     } catch (e) {
-        console.log(e)
         res.status(400).send(e)
     }
 })

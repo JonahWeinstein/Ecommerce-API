@@ -28,30 +28,36 @@ router.post('/stores/:storeId/products/add', auth, async (req, res) => {
 
 // unauthenticated routes used both for cms users and ecommerce sites
 // read all products from a store specified in the query string
-router.get('/stores/:id/products/all', async (req, res) => {
+router.get('/stores/:id/products/all', auth, async (req, res) => {
     try{
-        const store = await Store.findOne({ where: { id: req.params.id}})
+        const store = await Store.findOne({ where: { id: req.params.id, UserId: req.user.id}})
         if(!store){
-            return res.status(400).send({error: 'cannot find store'})
+            return res.status(404).send({error: 'cannot find store'})
         }
         const products = await Product.findAll({where: {StoreId: req.params.id},
         include: [{model: Image}]})
         res.send(products)
 
     } catch(e) {
-        res.status(400).send(e)
+        res.status(400).send()
     }
 })
 // read one product by id 
 
-router.get('/stores/:storeId/products/:id', async (req, res) => {
+router.get('/stores/:storeId/products/:id', auth, async (req, res) => {
+    if (!req.user) {
+        return res.status(401).send({error: 'please authenticate'})
+    }
     try{
-        const store = await Store.findOne({ where: { id: req.params.storeId}})
+        const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
         if(!store){
-            return res.status(400).send({error: 'cannot find store'})
+            return res.status(404).send({error: 'cannot find store'})
         }
         const product = await Product.findOne({where: {id: req.params.id, StoreId: req.params.storeId},
         include: [{model: Image}]})
+        if(!product) {
+            return res.status(404).send({error: 'cannot find product'})
+        }
         res.send(product)
 
     } catch(e) {
@@ -69,15 +75,16 @@ router.patch('/stores/:storeId/products/:productId/update', auth, async (req, re
      if (!isValidUpdate){
          return res.status(400).send({ error: 'Invalid Update'})
      }
+     
     try{
         const product = await Product.findOne({ where: { StoreId: req.params.storeId, id: req.params.productId}, include: Store})
         // make sure product exists in this store
         if(!product){
-            return res.status(400).send({error: 'cannot find product'})
+            return res.status(404).send({error: 'cannot find product'})
         }
         // make sure the store belongs to the user
         if(product.Store.UserId != req.user.id){
-            return res.status(400).send({error: 'cannot find store'})
+            return res.status(404).send({error: 'cannot find store'})
         }
         const [numberOfAffectedRows, affectdRows] = await Product.update(
             req.body, 
@@ -86,10 +93,11 @@ router.patch('/stores/:storeId/products/:productId/update', auth, async (req, re
     if(numberOfAffectedRows == 0){
         return res.status(404).send() 
     }
-    const updatedProduct = await Product.findOne({where: {id:req.params.productId}})
+    const updatedProduct = await Product.findOne({where: {id: req.params.productId, StoreId: req.params.storeId},
+        include: [{model: Image}]})
     res.send(updatedProduct)
     } catch (e) {
-        res.status(400).send()
+        res.status(400).send(e)
     }
 })
 // FOR USE BY END USERS OF ECOMMERCE-SITE
