@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const {User} = require('../sequelize')
 
 
@@ -31,15 +32,13 @@ router.post('/users', async (req, res) => {
 
  // login existing user 
 
- router.post('/users/login',  async (req, res) => {
-     try{
-        const user = await User.findByCredentials(req.body.email, req.body.password)
-        const token = await user.generateAuthToken()
-        res.send({ user, token})
-     } catch (e) {
-         res.status(400).send()
+ router.post(
+    '/users/login', 
+    passport.authenticate("local"),
+    (req, res) => {
+        res.send(req.user);
      }
- })
+ )
 
 
 

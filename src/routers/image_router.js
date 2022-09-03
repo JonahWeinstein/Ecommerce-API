@@ -3,6 +3,7 @@ const multer = require('multer')
 const sharp = require('sharp')
 const {Product, Store, Image} = require('../sequelize')
 const auth = require('../middleware/auth')
+const requireLogin = require('../middleware/requireLogin');
 
 const router = new express.Router();
 // used to define what kind of uploads are allowed
@@ -23,7 +24,7 @@ const upload = multer({
 })
 //get all images for a product
 
-router.get('/products/images', auth, async (req, res) => {
+router.get('/products/images', requireLogin, async (req, res) => {
     
     const product = await Product.findOne({ 
         where: { id: req.query.product, StoreId: req.query.store}, 
@@ -42,7 +43,7 @@ router.get('/products/images', auth, async (req, res) => {
 })
 // store and product specified in query string
 // add images to the product
-router.post('/stores/:storeId/products/:productId/images/add', auth, upload.single('image'), async (req, res) => {
+router.post('/stores/:storeId/products/:productId/images/add', requireLogin, upload.single('image'), async (req, res) => {
     try {
         const product = await Product.findOne({ where: { id: req.params.productId, StoreId: req.params.storeId}, include: Store})
         // make sure product exists in this store
@@ -71,7 +72,7 @@ router.post('/stores/:storeId/products/:productId/images/add', auth, upload.sing
 
 
 // delete a product image by storeid, prodictid, imageid in query string
-router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', auth, async (req, res) => {
+router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', requireLogin, async (req, res) => {
     try{
         const product = await Product.findOne({ 
             where: { id: req.params.productId, StoreId: req.params.storeId}, 
@@ -92,7 +93,7 @@ router.delete('/stores/:storeId/products/:productId/images/:imageId/delete', aut
     }
 })
 // update an images order
-router.patch('/stores/:storeId/products/:productId/images/:imageId/update', auth, async (req, res) => {
+router.patch('/stores/:storeId/products/:productId/images/:imageId/update', requireLogin, async (req, res) => {
     try {
         const product = await Product.findOne({ 
             where: { id: req.params.productId, StoreId: req.params.storeId}, 

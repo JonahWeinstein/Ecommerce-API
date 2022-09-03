@@ -1,10 +1,11 @@
 const express = require('express')
 const {Store} = require('../sequelize')
 const auth = require('../middleware/auth')
+const requireLogin = require('../middleware/requireLogin');
 
 const router = new express.Router();
 
-router.post('/stores/add', auth, async (req, res) => {
+router.post('/stores/add', requireLogin, async (req, res) => {
     try{
         const store = Store.build({
             ...req.body,
@@ -18,9 +19,10 @@ router.post('/stores/add', auth, async (req, res) => {
 })
 
 // get all your stores
-router.get('/stores', auth, async (req, res) => {
+router.get('/stores', requireLogin, async (req, res) => {
     try{
         const allStores = await Store.findAll({where: { UserId: req.user.id }})
+        
         res.send(allStores)
     } catch (e) {
         res.status(400).send(e)
@@ -28,7 +30,7 @@ router.get('/stores', auth, async (req, res) => {
 })
 
 // delete a store by id
-router.delete('/stores/:id/delete', auth, async (req, res) => {
+router.delete('/stores/:id/delete', requireLogin, async (req, res) => {
     try {
         await Store.destroy({where: {id: req.params.id, UserId: req.user.id}})
         res.send({})
