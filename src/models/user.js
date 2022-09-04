@@ -61,6 +61,9 @@ module.exports = (sequelize, DataTypes) => {
         const token = jwt.sign({id: user.id.toString()}, process.env.JWT_SIGNATURE, { expiresIn: '3h' }) 
         return token
      };
+     User.prototype.validPass = function(pw) {
+        return bcrypt.compareSync(pw, this.password);
+     };
     
      User.associate = function(models) {
         User.hasMany(models.Store, {onDelete: 'cascade'})
