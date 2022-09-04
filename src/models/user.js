@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
             user.password = await bcrypt.hash(user.password, 8)
         }
      });
-    
+    // no longer being used
      User.findByCredentials = async (email, password) => {
          const user = await User.findOne({where: { email: email}})
          if(!user) {
