@@ -8,7 +8,7 @@ const router = new express.Router();
 
 
 // create new user
-router.post('/users', async (req, res) => {
+router.post('/api/users', async (req, res) => {
     try{
         const {name, email, password} = req.body
         if(!name || !email || !password) {
@@ -33,10 +33,10 @@ router.post('/users', async (req, res) => {
  // login existing user 
 
  router.post(
-    '/users/login', 
+    '/api/users/login', 
     passport.authenticate("local"),
     (req, res) => {
-        res.send(req.user);
+        res.send(req.user)
      }
  )
 

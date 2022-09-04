@@ -9,7 +9,7 @@ const requireLogin = require('../middleware/requireLogin');
 const router = new express.Router();
 
 // add a product to a store
-router.post('/stores/:storeId/products/add', requireLogin, async (req, res) => {
+router.post('/api/stores/:storeId/products/add', requireLogin, async (req, res) => {
     try{   
         // see if store exists/does this user have acecss
         const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
@@ -29,7 +29,7 @@ router.post('/stores/:storeId/products/add', requireLogin, async (req, res) => {
 
 // unauthenticated routes used both for cms users and ecommerce sites
 // read all products from a store specified in the query string
-router.get('/stores/:id/products/all', requireLogin, async (req, res) => {
+router.get('/api/stores/:id/products/all', requireLogin, async (req, res) => {
     try{
         const store = await Store.findOne({ where: { id: req.params.id, UserId: req.user.id}})
         if(!store){
@@ -45,7 +45,7 @@ router.get('/stores/:id/products/all', requireLogin, async (req, res) => {
 })
 // read one product by id 
 
-router.get('/stores/:storeId/products/:id', requireLogin, async (req, res) => {
+router.get('/api/stores/:storeId/products/:id', requireLogin, async (req, res) => {
     if (!req.user) {
         return res.status(401).send({error: 'please authenticate'})
     }
@@ -68,7 +68,7 @@ router.get('/stores/:storeId/products/:id', requireLogin, async (req, res) => {
 } )
 // products/update?store=9&product=11
 // update a product by id using the query string
-router.patch('/stores/:storeId/products/:productId/update', requireLogin, async (req, res) => {
+router.patch('/api/stores/:storeId/products/:productId/update', requireLogin, async (req, res) => {
      //lets you throw an error when client attempts to update a nonexistent or protected (ex: id) field
      const updates = Object.keys(req.body)
      const allowedUpdates = ['name', 'description', 'quantity', 'price']
@@ -103,7 +103,7 @@ router.patch('/stores/:storeId/products/:productId/update', requireLogin, async 
 })
 // FOR USE BY END USERS OF ECOMMERCE-SITE
 // change product quantity (the only thing user interaction should be allowed to change)
-router.patch('/stores/:storeId/products/:productId/updateQuantity', async (req, res) => {
+router.patch('/api/stores/:storeId/products/:productId/updateQuantity', async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['quantity']
     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
@@ -125,7 +125,7 @@ router.patch('/stores/:storeId/products/:productId/updateQuantity', async (req, 
 
 
 // delete an existing product with store and product in query string
-router.delete('/stores/:storeId/products/:productId/delete', requireLogin, async (req, res) => {
+router.delete('/api/stores/:storeId/products/:productId/delete', requireLogin, async (req, res) => {
     try{
         const store = await Store.findOne({ where: { id: req.params.storeId, UserId: req.user.id}})
         if(!store){

@@ -5,7 +5,7 @@ const requireLogin = require('../middleware/requireLogin');
 
 const router = new express.Router();
 
-router.post('/stores/add', requireLogin, async (req, res) => {
+router.post('/api/stores/add', requireLogin, async (req, res) => {
     try{
         const store = Store.build({
             ...req.body,
@@ -19,7 +19,7 @@ router.post('/stores/add', requireLogin, async (req, res) => {
 })
 
 // get all your stores
-router.get('/stores', requireLogin, async (req, res) => {
+router.get('/api/stores', requireLogin, async (req, res) => {
     try{
         const allStores = await Store.findAll({where: { UserId: req.user.id }})
         
@@ -30,7 +30,7 @@ router.get('/stores', requireLogin, async (req, res) => {
 })
 
 // delete a store by id
-router.delete('/stores/:id/delete', requireLogin, async (req, res) => {
+router.delete('/api/stores/:id/delete', requireLogin, async (req, res) => {
     try {
         await Store.destroy({where: {id: req.params.id, UserId: req.user.id}})
         res.send({})

@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "proxy": {
+    "/api/*": {
+      "target": "http://localhost:3000"
+    }
+  },
   "scripts": {
     "client": "npm run dev-server --prefix client",
-    "dev": "concurrently \"env-cmd -f ./config/dev.env nodemon src/index.js\" \"npm run client\"",
-    "start": "node src/index.js",
+    "dev": "concurrently \"env-cmd -f ./config/dev.env nodemon src/app.js\" \"npm run client\"",
+    "start": "node src/app.js",
     "test": "env-cmd -f ./config/test.env jest --watch --runInBand --detectOpenHandles"
   },
   "jest": {
@@ -16,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
     "concurrently": "^7.3.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.0.0",

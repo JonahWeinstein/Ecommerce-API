@@ -9,8 +9,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(function (id, done) {
   
   User.findByPk(id).then(function (user) {
-      if (user) {
-         
+      if (user) { 
           done(null, user.get());
       } else {
           done(user.errors, null);
