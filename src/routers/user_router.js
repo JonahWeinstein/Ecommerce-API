@@ -41,7 +41,6 @@ router.post('/api/users', async (req, res) => {
  )
  router.get('/api/users/logout', function(req, res, next) {
     req.logout()
-    console.log(req.user)
     res.redirect('/');
   });
 
