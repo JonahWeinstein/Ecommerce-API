@@ -69,6 +69,7 @@ router.get('/api/stores/:storeId/products/:id', requireLogin, async (req, res) =
 // products/update?store=9&product=11
 // update a product by id using the query string
 router.patch('/api/stores/:storeId/products/:productId/update', requireLogin, async (req, res) => {
+    
      //lets you throw an error when client attempts to update a nonexistent or protected (ex: id) field
      const updates = Object.keys(req.body)
      const allowedUpdates = ['name', 'description', 'quantity', 'price']
