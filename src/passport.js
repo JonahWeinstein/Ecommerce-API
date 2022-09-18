@@ -17,7 +17,7 @@ passport.deserializeUser(function (id, done) {
   });
 });
 
-passport.use('login', new LocalStrategy(
+passport.use('local', new LocalStrategy(
   {
     usernameField: "email",
     passwordField: "password"
@@ -38,29 +38,3 @@ passport.use('login', new LocalStrategy(
 
 ));
 
-passport.use('signup', new LocalStrategy(
-  {
-    usernameField: 'email',
-    passwordField: 'password',
-    // passes request object to callback
-    passReqToCallback: true
-  },
-  async (req, email, password, done) => {
-    try {
-      const name = req.body.name
-      const user = User.build({ name, email, password })
-      await user.save()
-      req.login(user, (err) => {
-        done(err, null)
-      })
-      return done(null, user);
-    } catch (e) {
-      
-      if(e.name == 'SequelizeUniqueConstraintError'){
-        return done({message: 'there is already an account with this email'})
-    }
-      done(e);
-    }
-
-  }
-))

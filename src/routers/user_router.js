@@ -8,17 +8,27 @@ const router = new express.Router();
 
 
 // create new user
-router.post('/api/users',
-    passport.authenticate('signup'),
-    async (req, res) => {
-        res.send(req.user)
-    })
+router.post('/api/users', async (req, res, next) => {
+    
+    try {
+        const {name, email, password} = req.body
+        const user = User.build({ name, email, password })
+        await user.save()
+        req.login(user, (err) => {
+          return next(err, null)
+        })
+        res.send(user)
+      } catch (e) {
+        console.log(e)
+      }
+        
+})
 
 // login existing user 
 
 router.post(
     '/api/users/login',
-    passport.authenticate("login"),
+    passport.authenticate("local"),
     (req, res) => {
         res.send(req.user)
     }
