@@ -27,9 +27,8 @@ router.post('/api/stores/:storeId/products/add', requireLogin, async (req, res) 
     }
 })
 
-// unauthenticated routes used both for cms users and ecommerce sites
 // read all products from a store specified in the query string
-router.get('/api/stores/:id/products/all', requireLogin, async (req, res) => {
+router.get('/api/stores/:id/products', requireLogin, async (req, res) => {
     try{
         const store = await Store.findOne({ where: { id: req.params.id, UserId: req.user.id}})
         if(!store){

@@ -11,7 +11,9 @@ const cartRouter = require('./routers/cart_router')
 const userRouter = require('./routers/user_router')
 const storeRouter = require('./routers/store_router')
 const imageRouter = require('./routers/image_router')
-require('./passport')
+require('./services/passport-local')
+require('./services/passport-google')
+
 
 
 const app = express()

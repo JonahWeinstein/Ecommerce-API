@@ -38,6 +38,18 @@ router.get('/api/users/logout', function (req, res) {
     res.redirect('/');
 });
 
+// google oauth2.0 auth routes
+
+router.get('/api/auth/google', passport.authenticate('google'));
+
+router.get(
+    '/api/oauth2/redirect/google',
+    passport.authenticate('google'),
+    (req, res) => {
+      res.redirect('http://localhost:8080/UserDashboard');
+    }
+  );
+
 
 
 module.exports = router

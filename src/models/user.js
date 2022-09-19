@@ -20,13 +20,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false,
-            minLength: 7,
+            allowNull: true,
+            defaultValue: 'password',
             validate (value) {
                 if(value.toLowerCase().includes("password")) {
                     throw new Error('Password should not contain the word "password" ');
                 }
             }
+        },
+        googleId: {
+            type: DataTypes.STRING
         }
     });
     
@@ -68,6 +71,8 @@ module.exports = (sequelize, DataTypes) => {
      User.associate = function(models) {
         User.hasMany(models.Store, {onDelete: 'cascade'})
     }
+    User.sync()
+    
 
      return User;
 }
