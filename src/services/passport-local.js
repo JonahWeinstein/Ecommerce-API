@@ -8,11 +8,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(function (id, done) {
 
-  User.findByPk(id).then(function (user) {
+  User.findByPk(id).then(function (user, error) {
     if (user) {
       done(null, user.get());
     } else {
-      done(user.errors, null);
+      done(error, null);
     }
   });
 });
@@ -25,9 +25,9 @@ passport.use('local', new LocalStrategy(
   async function (username, password, done) {
     try {
       const user = await User.findOne({ where: { email: username } })
-
       if (!user) { return done(null, false); }
-      if (!user.validPass(password)) { return done(null, false); }
+      if (!user.validPass(password)) { 
+        return done(null, false); }
       return done(null, user);
     } catch (err) {
       return done(err, null);

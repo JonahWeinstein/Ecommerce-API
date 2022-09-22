@@ -33,7 +33,7 @@ app.use(cors(corsOptions))
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: ['123123']
+    keys: [process.env.cookieKey]
   })
 );
 

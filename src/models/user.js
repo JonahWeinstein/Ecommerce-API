@@ -20,9 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: true,
-            defaultValue: 'password',
+            // essentially a dummy value, there is no input password that will hash to this value
+            defaultValue: "pass",
             validate (value) {
+                
                 if(value.toLowerCase().includes("password")) {
                     throw new Error('Password should not contain the word "password" ');
                 }
@@ -35,7 +36,6 @@ module.exports = (sequelize, DataTypes) => {
     
     // for instance methods you need to pass the instance as parameter
     User.beforeSave( async (user) => {
-        
         // checks if password is being created/ modified (needs to be hashed/rehashed)
         if (user.changed('password')) {
             user.password = await bcrypt.hash(user.password, 8)
@@ -65,13 +65,16 @@ module.exports = (sequelize, DataTypes) => {
         return token
      };
      User.prototype.validPass = function(pw) {
+
         return bcrypt.compareSync(pw, this.password);
      };
     
      User.associate = function(models) {
         User.hasMany(models.Store, {onDelete: 'cascade'})
     }
-    User.sync()
+    // User.destroy({where: {email: 'jonah1weinstein17@gmail.com'}})
+    // User.sync()
+    
     
 
      return User;

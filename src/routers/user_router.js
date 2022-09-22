@@ -19,7 +19,7 @@ router.post('/api/users', async (req, res, next) => {
         })
         res.send(user)
       } catch (e) {
-        console.log(e)
+        res.status(400).send(e)
       }
         
 })
@@ -42,11 +42,13 @@ router.get('/api/users/logout', function (req, res) {
 
 router.get('/api/auth/google', passport.authenticate('google'));
 
+
 router.get(
     '/api/oauth2/redirect/google',
     passport.authenticate('google'),
     (req, res) => {
-      res.redirect('http://localhost:8080/UserDashboard');
+      res.redirect('http://localhost:8080/UserDashboard')
+      
     }
   );
 
