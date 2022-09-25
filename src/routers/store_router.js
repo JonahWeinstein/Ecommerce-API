@@ -1,6 +1,5 @@
 const express = require('express')
 const {Store} = require('../sequelize')
-const auth = require('../middleware/auth')
 const requireLogin = require('../middleware/requireLogin');
 
 const router = new express.Router();

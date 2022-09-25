@@ -2,7 +2,6 @@ const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
 const {Product, Store, Image} = require('../sequelize')
-const auth = require('../middleware/auth')
 const requireLogin = require('../middleware/requireLogin');
 
 const router = new express.Router();

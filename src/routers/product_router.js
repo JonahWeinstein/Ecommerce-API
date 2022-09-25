@@ -1,6 +1,5 @@
 const express = require('express')
 const {Product, Store, Image} = require('../sequelize')
-const auth = require('../middleware/auth')
 const requireLogin = require('../middleware/requireLogin');
 
 

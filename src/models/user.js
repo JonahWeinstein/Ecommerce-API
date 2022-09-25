@@ -1,6 +1,6 @@
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -58,12 +58,7 @@ module.exports = (sequelize, DataTypes) => {
      // model instance methods are defined on the models prototype
     
      // can't use arrow function because we need this binding
-     User.prototype.generateAuthToken = async function() {
-        const user = this
-        //create a token using users unique id
-        const token = jwt.sign({id: user.id.toString()}, process.env.JWT_SIGNATURE, { expiresIn: '3h' }) 
-        return token
-     };
+    
      User.prototype.validPass = function(pw) {
 
         return bcrypt.compareSync(pw, this.password);
