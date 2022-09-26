@@ -1,14 +1,15 @@
-const { User } = require('../sequelize')
-const { Store } = require('../sequelize')
-const { testUser, testStore, testStore2, testProduct} = require('./fixtures')
+const { User, Store, Product } = require('../sequelize')
+
+const { testUser, testStore, testProduct} = require('./fixtures')
 
 module.exports = async () => {
+  jest.setTimeout(30000);
   try {
     // delete test user and all th data (will be created again with userfactory)
     await User.destroy({where: {email: testUser.email}})
     const user = await User.build(testUser).save()
-    await Store.build({...testStore, UserId: user.id}).save()
-    await Store.build({...testStore2, UserId: user.id}).save()
+    const store = await Store.build({...testStore, UserId: user.id}).save()
+    await Product.build({...testProduct, StoreId: store.id}).save()
     
   } catch(e) {
     console.log(e)

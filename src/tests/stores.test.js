@@ -1,10 +1,10 @@
 const puppeteer = require('puppeteer');
 const { getContentsOf, getContentsOfArray, login } = require('./helpers/page');
-const { sequelize } = require('../sequelize')
+
 
 // globally scoped variables which are available in all tests
 let page, browser;
-jest.setTimeout(30000);
+
 
 beforeAll(async () => {
     browser = await puppeteer.launch({
@@ -76,7 +76,7 @@ describe('User is logged in', () => {
 
     })
 
-    test.only('deleting store works', async () => {
+    test('deleting store works', async () => {
         await page.goto('http://localhost:8080/UserDashboard')
         await page.waitForSelector('div.list__item')
         await Promise.all([
@@ -93,7 +93,6 @@ describe('User is logged in', () => {
             page.waitForSelector('a[href="/UserDashboard/AddStore"]')
         ])
         const storeNames = await getContentsOfArray(page, 'div.h1')
-        console.log(storeNames)
         expect(storeNames).not.toContain('testStore')
     })
 

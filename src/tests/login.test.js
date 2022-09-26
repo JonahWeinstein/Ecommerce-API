@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer')
 
 // globally scoped variables which are available in all tests
 let page, browser;
-jest.setTimeout(30000);
+
 
 beforeAll(async () => {
     browser = await puppeteer.launch({
