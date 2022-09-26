@@ -4,8 +4,16 @@ const userFactory = require('../factories/userFactory');
 
 
    
-    const getContentsOf = async (page, selector) => {
+    const getContentsOf = (page, selector) => {
         return page.$eval(selector, el => el.innerHTML )
+    }
+
+    const getContentsOfArray = (page, selector) => {
+        // page.$$eval calls callback with array of selector matches, storeNames will be array of innerHTML of all of them
+        return page.$$eval(selector, (elements) => {
+            return elements.map((element) => element.innerHTML)
+            }
+        )
     }
 
     const login = async (page) => {
@@ -19,6 +27,7 @@ const userFactory = require('../factories/userFactory');
 
 module.exports = {
     getContentsOf,
+    getContentsOfArray,
     login
 }
 

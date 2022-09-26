@@ -8,6 +8,9 @@ const testUser = {
 const testStore = {
     store_name: 'testStore'
 }
+const testStore2 = {
+    store_name: 'testStore2'
+}
 
 const testProduct = {
     name: 'testProduct',
@@ -19,5 +22,6 @@ const testProduct = {
 module.exports = {
     testUser, 
     testStore,
+    testStore2,
     testProduct
 }
