@@ -12,11 +12,12 @@
     "client": "npm run dev-server --prefix client",
     "dev": "concurrently \"env-cmd -f ./config/dev.env nodemon src/app.js\" \"npm run client\"",
     "start": "node src/app.js",
-    "test": "env-cmd -f ./config/test.env jest --detectOpenHandles"
+    "test": "env-cmd -f ./config/dev.env jest --forceExit"
   },
   "jest": {
     "verbose": true,
-    "testURL": "http://localhost:8080/"
+    "testURL": "http://localhost:8080/",
+    "setupFiles": ["./src/tests/setup.js"]
   },
   "author": "",
   "license": "ISC",

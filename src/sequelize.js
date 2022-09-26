@@ -5,14 +5,9 @@ const mysql = require("mysql2");
 
 // create database object to hold all model definitions
 var db = {};
-const connection = mysql.createConnection(process.env.MYSQL_URL + '/' + process.env.DATABASE_NAME)
-connection.query(
-  `CREATE DATABASE IF NOT EXISTS ${process.env.DATABASE_NAME}`,
-  function (err, results) {
-    console.log(err);
-  }
-);
-const sequelize  = new Sequelize(process.env.MYSQL_URL + '/' + process.env.DATABASE_NAME);
+
+
+const sequelize  = new Sequelize(process.env.MYSQL_URL);
 
 
 const modelPath = path.join(__dirname, '/models')

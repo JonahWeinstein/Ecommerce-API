@@ -6,7 +6,7 @@ jest.setTimeout(30000);
 
 beforeAll(async () => {
     browser = await puppeteer.launch({
-        headless: false
+        headless: true
     })
 })
 
