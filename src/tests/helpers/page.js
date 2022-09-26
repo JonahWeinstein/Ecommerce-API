@@ -9,7 +9,7 @@ const userFactory = require('../factories/userFactory');
     }
 
     const login = async (page) => {
-        const user = await userFactory('testUser', 'testUser@example.com', 'testPass')
+        const user = await userFactory()
         const {session, sig} = sessionFactory(user)
         await page.setCookie({ name: 'session', value: session });
         await page.setCookie({ name: 'session.sig', value: sig });

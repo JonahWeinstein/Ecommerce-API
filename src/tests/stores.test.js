@@ -42,21 +42,39 @@ describe('User is logged in', () => {
         const text = await getContentsOf(page, 'p')
         expect(text).toEqual('Pick A Name For Your Store')
     })
-    test.only('adding store works', async () => {
-        try {
+    test('adding store works', async () => {
+        
             await page.goto('http://localhost:8080/UserDashboard/AddStore')
-            await page.type('form input', 'test store')
+            await page.type('form input', 'test store 2')
             await Promise.all([
                 page.click('button[type=submit]'),
-                page.waitForNavigation()
+                // need to wait for selector for store list because it will load slightly after navigation
+                page.waitForSelector('div.list__item')
             ])
-            const storeName = await getContentsOf(page, 'h1')
-            expect(storeName).toEqual('test store')
-        }
-        catch (e) {
-            console.log(e)
-        }
+            // page.$$eval calls callback with array of selector matches, storeNames will be array of innerHTML of all of them
+            const storeNames = await page.$$eval('div.h1', (divs) => {
+                return divs.map((div) => div.innerHTML)
+            })
+            expect(storeNames).toContain('test store 2')
+        
+        
        
         
     })
+    test('deleting store shows delete modal', async () => {
+       
+        await page.goto('http://localhost:8080/UserDashboard')
+            await page.waitForSelector('div.list__item')
+            await Promise.all([
+                // click on store to delete
+                page.click('div.h1'),
+                page.waitForSelector('button.cta')
+            ])
+            await page.click('button.button.delete-button')
+            const text = await getContentsOf(page, 'button.button.cta')
+            expect(text).toEqual('Nevermind')
+            
+
+    })
+    
 })
