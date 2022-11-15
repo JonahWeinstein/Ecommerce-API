@@ -1,5 +1,5 @@
 const app = require('./app')
-
+import 'semantic-ui-css/semantic.min.css'
 const port = process.env.PORT || 3000;
 
 

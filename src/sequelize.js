@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs');
 const {Sequelize, DataTypes} = require('sequelize');
-const mysql = require("mysql2");
+
 
 // create database object to hold all model definitions
 var db = {};

@@ -35,10 +35,7 @@ describe('User is logged in', () => {
                 // wait for page to load
                 page.waitForSelector('a#addProduct')
                 
-            ])
-           
-      
-       
+            ]) 
     })
 
     test('can see products', async () => {
@@ -46,7 +43,7 @@ describe('User is logged in', () => {
         expect(products).toContain('testProduct')
     })
 
-    test.only('can add product', async () => {
+    test('can add product', async () => {
         // click on add product button
         await Promise.all([
             page.click('a.button.cta'),
@@ -58,10 +55,29 @@ describe('User is logged in', () => {
         await page.type('input[name="quantity"]', '30')
         await Promise.all([
             page.click('button[type="submit"]'),
-            page.waitForSelector('button.delete-button:last-of-type')
+            page.waitForSelector('button#deleteProduct')
         ])
         // if product is successfully added then cta will now say update product
         const action = await getContentsOf(page, 'button[type="submit"]')
         expect(action).toEqual('Update Product')
+    })
+
+    test('Can update product', async () => {
+        await Promise.all([
+            // click on product to go to edit page
+            page.click('div.h1'),
+            // wait for page to load
+            page.waitForSelector('input[name="name"]')
+        ]) 
+        // change product name
+        await page.$eval('input[name="name"]', el => el.value = '')
+        await page.type('input[name="name"]', 'updated test name')
+
+        await Promise.all([
+            page.click('button[type="submit"]'),
+            page.waitForSelector('form p')
+        ])
+        const text = await getContentsOf(page, 'form p')
+        expect(text).toEqual('Updated')
     })
 })
